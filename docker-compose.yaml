@@ -1,0 +1,35 @@
+services:
+  db_server:
+    image: mysql
+    container_name: db_server
+    ports:
+      - 3306:3306
+    environment:
+      MYSQL_ROOT_PASSWORD: rootmypass
+      MYSQL_USER: fabio
+      MYSQL_PASSWORD: mypass
+      MYSQL_DATABASE: applications
+    volumes:
+      - db-data:/var/lib/mysql
+    networks:
+      - network-cadastro-api
+
+  cadastro-api:
+    container_name: cadastro-api
+    build:
+      context: .
+    ports:
+      - 8000:8000
+    volumes:
+      - ./:/app
+    networks:
+      - network-cadastro-api
+    depends_on:
+      - db_server
+
+networks:
+  network-cadastro-api:
+    driver: bridge
+
+volumes:
+  db-data:
